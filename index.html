@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gramener Solutions</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <style>
+    @media (min-width: 768px) {
+      #sidebar {
+        min-width: 12rem;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      #sidebar {
+        min-width: 16rem;
+      }
+    }
+
+    .narrative {
+      max-width: 40rem;
+    }
+
+    body {
+      padding-top: 1px;
+    }
+    /* Make accordion items more compact */
+    #sidebar .accordion-button {
+      padding: 0.5rem 1rem;
+    }
+
+    #sidebar .list-group-item {
+      padding: 0.5rem 1rem;
+    }
+
+    /* Ensure cards wrap properly */
+    .card {
+      margin-bottom: 1rem;
+    }
+
+    /* Add some breathing room between sidebar and cards */
+    @media (min-width: 768px) {
+      .cards-container {
+        padding-left: 5rem;
+      }
+    }
+
+    /* Private demo styles */
+    .hide-private .client-name,
+    .hide-private .private-demo {
+      display: none;
+    }
+
+    .private-demo .demo {
+      background-color: rgba(var(--bs-danger-rgb), 0.1);
+    }
+
+    /* Demo hover effect */
+    .demo:hover {
+      cursor: pointer;
+      background-color: rgba(var(--bs-body-color-rgb), 0.05);
+    }
+
+    /* Video player styles */
+    .figure {
+      position: relative;
+    }
+
+    .play-button-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 50px;
+      height: 50px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .play-button-overlay::before {
+      content: '';
+      width: 0;
+      height: 0;
+      border-left: 15px solid white;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+    }
+
+    /* Chat output styling */
+    #chat-output table a {
+      font-weight: bold;
+    }
+    #chat-output {
+      margin-top: 2rem;
+      min-height: 100px;
+      display: none;
+    }
+
+    #chat-output.active {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href=".">Solutions</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="nav-item dropdown ms-auto" role="group" aria-label="Toggle dark mode" title="Toggle Dark Mode">
+          <button class="dark-theme-toggle btn btn-outline-light dropdown-toggle" type="button"
+            data-bs-toggle="dropdown" aria-expanded="false" aria-label="Toggle theme (auto)">
+            <i class="bi bi-circle-half"></i> <span class="d-lg-none ms-2">Toggle theme</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><button class="dropdown-item" data-bs-theme-value="light"><i class="me-2 bi bi-sun-fill"></i>
+                Light</button></li>
+            <li><button class="dropdown-item" data-bs-theme-value="dark"><i class="me-2 bi bi-moon-stars-fill"></i>
+                Dark</button></li>
+            <li><button class="dropdown-item" data-bs-theme-value="auto"><i class="me-2 bi bi-circle-half"></i>
+                Auto</button></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="container-fluid mt-4">
+    <!-- Header with sort, search, and AI Chat -->
+    <div class="row mb-3">
+      <div class="col d-flex align-items-end">
+        <div id="clear-filter-container">
+          <button class="btn btn-sm btn-outline-primary me-2 mb-2 d-none" id="clear-filter">
+            Clear <span class="d-none d-xl-inline">filter</span>
+          </button>
+        </div>
+        <div class="dropdown d-none d-sm-inline-block me-2 mb-2">
+          <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            Sort
+          </button>
+          <ul class="dropdown-menu sort-options">
+            <li><a class="dropdown-item sort d-flex justify-content-between align-items-center" data-sort='[["LinkDays", "desc"], ["LinkCount", "desc"]]'>
+              <span>Trending</span>
+              <i class="bi bi-fire text-danger"></i>
+            </a></li>
+            <li><a class="dropdown-item sort d-flex justify-content-between align-items-center" data-sort='[["Date", "desc"]]'>
+              <span>Latest</span>
+              <i class="bi bi-stopwatch"></i>
+            </a></li>
+            <li><a class="dropdown-item sort d-flex justify-content-between align-items-center" data-sort='[["Featured", "desc"], ["Date", "desc"]]'>
+              <span>Featured</span>
+              <i class="bi bi-star-fill text-warning"></i>
+            </a></li>
+            <li><a class="dropdown-item sort d-flex justify-content-between align-items-center" data-sort='[["Video", "desc"], ["Date", "desc"]]'>
+              <span>Video</span>
+              <i class="bi bi-youtube text-danger"></i>
+            </a></li>
+          </ul>
+        </div>
+        <button type="button"
+          class="btn btn-sm btn-outline-primary me-2 mb-2 hide-private-action d-none d-xl-inline-block"
+          data-bs-toggle="button" aria-pressed="false">Private</button>
+        <input type="search" id="search" class="form-control form-control-sm w-auto flex-grow-1 border-secondary mb-2"
+          placeholder="Search" aria-label="Search">
+      </div>
+      <form class="col d-flex align-items-end" id="ai-chat" method="POST" action=".">
+        <div class="input-group" role="group" aria-label="AI Chat Group">
+          <input id="chat-input" class="form-control form-control-sm border-secondary mb-2"
+            placeholder="Describe who you're meeting, e.g. CTO of Ford wants supply chain solutions, or an area, or anything">
+          <button type="submit" class="btn btn-sm btn-primary me-2 mb-2 d-none d-xl-inline-block">
+            <i class="bi bi-magic"></i> Get LLM use cases
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Add a new container for chat output -->
+    <div class="container mt-4">
+      <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+          <div id="chat-output" class="bg-light p-4 rounded shadow-sm">
+            <!-- Chat responses will appear here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main content area with sidebar and cards -->
+    <div class="row g-4">
+      <!-- Sidebar -->
+      <div class="col-md-3 col-lg-2">
+        <div class="accordion" id="sidebar">
+        </div>
+      </div>
+
+      <!-- Cards area with new cards-container class -->
+      <div class="col-md-9 col-lg-10 cards-container">
+        <div id="demo-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Structure -->
+  <div class="modal fade" id="demo-modal" tabindex="-1" aria-labelledby="demo-modal-label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+
+      </div>
+    </div>
+  </div>
+  <footer class="my-5 vh-100 d-flex align-items-center justify-content-center">
+    <h1 class="display-4">Designed by <a href="https://gramener.com/"
+        class="text-reset link-offset-3 link-underline link-underline-opacity-25">Gramener</a></h1>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/@gramex/ui@0.3/dist/dark-theme.js" type="module"></script>
+  <script src="script.js" type="module"></script>
+</body>
+
+</html>
